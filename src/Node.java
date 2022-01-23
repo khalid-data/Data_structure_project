@@ -5,6 +5,7 @@ public class Node<T> {
     Node<T> parent;
     LinkedList<T> children_list;
 
+
     public Node(T Node)
     {
         this.Node = Node;
@@ -16,5 +17,10 @@ public class Node<T> {
         next = null;
         prev = null;
         parent = null;
+    }
+
+    public void add_child(Node<T> node)
+    {
+        this.children_list.addNode(node);
     }
 }

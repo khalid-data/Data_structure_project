@@ -20,15 +20,15 @@ public class DynamicGraph {
             this.head = nGraphNode;
             nGraphNode.prev = null;
             nGraphNode.next = null;
-            this.End = nGraphNode;
         }
         else
         {
+
             nGraphNode.prev = this.End;
             nGraphNode.next = null;
             this.End.next = nGraphNode;
-            this.End = nGraphNode;
         }
+        this.End = nGraphNode;
     }
 
     public GraphNode insertNode(int nodeKey)
@@ -41,6 +41,7 @@ public class DynamicGraph {
     public void deleteNode(GraphNode node)
     {
         // we delete a node only if it has no edges
+        // must check if it's head or end of graph this changes all
         if (node.children.head == null && node.parents.head == null) {
             node.prev.next = node.next;
             node.next.prev = node.prev;
@@ -70,9 +71,10 @@ public class DynamicGraph {
         source.color = Grey;
         Queue<GraphNode> queue = new Queue<GraphNode>();
         Node<GraphNode> node = new Node<GraphNode>(source);
+        //node.Node.key = source.key;
         queue.Enqueue(node);
-        RootedTree tree = new RootedTree(source.key);
-        while (queue.queue.head != null)
+        RootedTree tree = new RootedTree(node);
+        while (queue.list.head != null)
         {
            Node<GraphNode> u = queue.Dequeue();
            Node<GraphNode> current = u.children_list.head;
@@ -80,6 +82,7 @@ public class DynamicGraph {
            {
                if (current.Node.color == White)
                {
+                   tree.addChild(current);// check this later
                    current.Node.color = Grey;
                    current.Node.d ++;
                    current.Node.parent = u.Node;
@@ -109,11 +112,12 @@ public class DynamicGraph {
             v = v.next;
         }
         u.color = Black;
+        time.value = time.value+1;
         u.retraction_time = time.value;
         GraphNode nU = new GraphNode(u.key);
         nU.parents = u.parents;
         nU.children = u.children;
-        nG.addGraphNode(nU);// in this graph the first edge will be the one eith the smallest retraction time
+        nG.addGraphNode(nU);// in this graph the first edge will be the one with the smallest retraction time
         //and the last one will be the one with the biggest retraction time
     }
 
@@ -124,7 +128,7 @@ public class DynamicGraph {
         Time time = new Time(0);
         GraphNode U = G.head;
         while (U != null) {
-            if (U.color != White) {
+            if (U.color == White) {
                 dfs_visit(G,U, time, nG);
             }
             U = U.next;
@@ -138,19 +142,19 @@ public class DynamicGraph {
         }
         return nG;
     }
-    void dfs_visit2(DynamicGraph Gt, GraphNode u, Time time, RootedTree r,Node<Integer> parent)
+    void dfs_visit2(DynamicGraph Gt, GraphNode u, Time time, RootedTree r,Node<GraphNode> parent)
     {
         time.value = time.value+1;
         u.discovery_time = time.value;
         u.color = Grey;
-        Node<Integer> new_node = new Node<Integer>(u.key);
+        Node<GraphNode> new_node = new Node<GraphNode>(u);
 
         Node<GraphNode> v = u.parents.head;
         while(v!= null)
         {
             if (v.Node.color == White)
             {
-                parent.children_list.addNode(new Node<Integer>(v.Node.key));
+                parent.children_list.addNode(new Node<GraphNode>(v.Node));
                 v.Node.parent = u;
                 dfs_visit2(Gt,u,time, r, new_node);
             }
@@ -160,12 +164,13 @@ public class DynamicGraph {
 
 
     public RootedTree dfs2(DynamicGraph Gt) {
-        RootedTree tree = new RootedTree(0);
+        GraphNode zero_node = new GraphNode(0);
+        RootedTree tree = new RootedTree(new Node<GraphNode>(zero_node));
         Time time = new Time(0);
         GraphNode U = Gt.End;
         while (U != null) {
             if (U.color != White) {
-                Node<Integer> in_tree = new Node<Integer>(U.key);
+                Node<GraphNode> in_tree = new Node<GraphNode>(U);
                 tree.root.children_list.addNode(in_tree);
                 dfs_visit2(Gt,U, time,tree, in_tree);
             }

@@ -28,6 +28,8 @@ public class GraphNode
         this.parent = null;
         this.discovery_time = 0;
         this.retraction_time = 0;
+        children = new LinkedList<>();
+        parents = new LinkedList<>();
     }
 
     public int getKey()

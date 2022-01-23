@@ -17,7 +17,6 @@ public class LinkedList<T> {
             nNode.prev = null;
             nNode.next = null;
             this.head = nNode;
-            this.End = nNode;
 
         }
         //2)we already have some nodes in
@@ -26,9 +25,9 @@ public class LinkedList<T> {
             nNode.next = null;
             nNode.prev = this.End;
             this.End.next = nNode;
-            this.End = nNode;
 
         }
+        this.End = nNode;
     }
 
     int get_length()

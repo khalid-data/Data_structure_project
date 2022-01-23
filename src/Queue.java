@@ -1,25 +1,24 @@
 public class Queue<T> {
-    LinkedList<T> queue;
+    LinkedList<T> list;
     //this linklist saves the head and tail
 
     public Queue()
     {
-        queue = new LinkedList<T>();
-
+        list= new LinkedList<T>();
     }
 
     void Enqueue(Node<T> node)
     {
-        queue.addNode(node);
+        list.addNode(node);
     }
 
     Node<T> Dequeue()
     {
-        if (queue.head != null)
+        if (list.head != null)
         {
-            Node<T> temp = queue.head;
-            queue.head = temp.next;
-            queue.head.prev = null;
+            Node<T> temp = list.head;
+            list.head = temp.next;
+            list.head.prev = null;
             return temp;
         }
         return null;
