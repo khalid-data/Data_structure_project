@@ -18,8 +18,6 @@ public class GraphNode
     LinkedList <GraphNode>parents;//node that emits nodes to this node
 
 
-
-
     public GraphNode(int key)
     {
         this.key = key;

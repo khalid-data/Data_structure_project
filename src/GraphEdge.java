@@ -9,7 +9,9 @@ public class GraphEdge
     public GraphEdge(Node<GraphNode> from,Node<GraphNode> to)
     {
         this.from = from;
+        to.Node.parents.addNode(from);
         this.to = to;
+        from.Node.children.addNode(to);
     }
 
     public Node<GraphNode> getSource() {
@@ -20,6 +22,7 @@ public class GraphEdge
 
     void deleteNode(Node<GraphNode> to_delete)
     {
+
         // we should connect the prev and next Nodes together
         // make the node null so it will be deleted by the garbage disposal
         to_delete.prev.next = to_delete.next;

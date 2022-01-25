@@ -5,7 +5,7 @@ public class LinkedList<T> {
     public LinkedList()
     {
         this.head = null;
-        this.End = null;
+        this.End = this.head;
     }
 
     void addNode(Node<T> nNode)
@@ -17,6 +17,7 @@ public class LinkedList<T> {
             nNode.prev = null;
             nNode.next = null;
             this.head = nNode;
+            this.End = this.head;
 
         }
         //2)we already have some nodes in
@@ -33,18 +34,14 @@ public class LinkedList<T> {
     int get_length()
     {
         int cnt = 0;
-        if (head!= null)
-        {
-            cnt++;
+        if (head!= null) {
             Node<T> current = head;
-            while (current!= End)
-            {
+            while (current != null) {
                 cnt++;
-                current= head.next;
+                current = current.next;
             }
-        }
 
+        }
         return cnt;
     }
-
 }

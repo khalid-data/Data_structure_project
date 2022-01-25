@@ -22,13 +22,22 @@ public class RootedTree {
         // now we have a root and its children list
     }
 
+    public RootedTree(GraphNode node)
+    {
+        this.root = new Node<>(node);
+        // now we have a root and its children list
+    }
+
     /*
     adds child to the root
     note: to add node to roots child (its linked list) we do it in the node class
      */
     void addChild (Node<GraphNode> node)
     {
-        root.children_list.addNode(node);
+        if (root != null)
+            root.children_list.addNode(node);
+        else
+            this.root = node;
     }
 
 
@@ -41,17 +50,23 @@ public class RootedTree {
 
         //as long as the head isn't -1 or null keep adding the current's head children
         do {// we know the first time root isn't null
-            if(queue.list.head.Node.key == -1)
+            if(queue.list.head != null && queue.list.head.Node.key == -1 && queue.list.head.next != null)
             {
                 out.writeBytes(System.lineSeparator());
                 // now we know we finished adding all of children in next level
                 // and printing the ones in the current level
                 queue.Enqueue(queue.Dequeue());
             }
-            addToQueue(queue);//takes the head of the queue and adds all its children
-            Node<GraphNode> to_print = queue.Dequeue();
-            out.writeInt(to_print.Node.key);
-            out.writeChar(',');
+            else if (queue.list.head != null && queue.list.head.Node.key == -1 && queue.list.head.next == null)
+            {
+                queue.Dequeue();
+            }
+            if (queue.list.head != null) {
+                addToQueue(queue);//takes the head of the queue and adds all its children
+                Node<GraphNode> to_print = queue.Dequeue();
+                out.writeBytes(String.valueOf(to_print.Node.key));
+                if (to_print.next.Node.key != -1){out.writeBytes(",");}
+            }
         }
         while (queue.list.head != null);
 
@@ -75,13 +90,13 @@ public class RootedTree {
     }
 
     private void print_tree(Node<GraphNode> root, DataOutputStream out) throws IOException {
-        out.writeInt(root.Node.key);// print roo
+        out.writeBytes(String.valueOf(root.Node.key));// print roo
         out.writeBytes(System.lineSeparator());
         Node<GraphNode> current = root.children_list.head;
         while(current!=null)// ad all current queue head to queue
         {
-            out.writeInt(current.Node.key);
-            out.writeChar(',');
+            out.writeBytes(String.valueOf(current.Node.key));
+            out.writeBytes(",");
             print_tree(current, out);
             current = current.next;// next child of root aka right sibling of current
         }

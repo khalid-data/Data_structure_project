@@ -13,20 +13,27 @@ public class DynamicGraph {
         this.head = null;
         this.End = null;
     }
+
     void addGraphNode(GraphNode nGraphNode)
     {
-        if(this.head == null)
+        if(this.head == null)//graph is still empty
         {
             this.head = nGraphNode;
             nGraphNode.prev = null;
             nGraphNode.next = null;
         }
-        else
+        if (this.head != null && this.head.next == null)// there is only a head
         {
-
-            nGraphNode.prev = this.End;
-            nGraphNode.next = null;
+            this.End = nGraphNode;
+            this.head.next = nGraphNode;
+            this.End.prev = this.head;
+            this.End.next = null;
+        }
+        if(this.head!= null && this.End != null){
             this.End.next = nGraphNode;
+            nGraphNode.prev = this.End;
+            this.End = nGraphNode;
+            this.End.next = null;
         }
         this.End = nGraphNode;
     }
@@ -42,11 +49,24 @@ public class DynamicGraph {
     {
         // we delete a node only if it has no edges
         // must check if it's head or end of graph this changes all
-        if (node.children.head == null && node.parents.head == null) {
+
+        //only one node in list
+        if(node.next == null && node.prev == null) {
+            node = null;
+        }
+        else if(node.next != null && node.prev == null) {// first node but not only
+            this.head = node.next;
+            this.head.prev = null;
+            node = null;
+        }
+        else if(node.prev != null && node.next == null) {//last but not only
+            this.End = node.prev;
+            this.End.next = null;
+            node = null;
+        }
+        else {//mid node
             node.prev.next = node.next;
             node.next.prev = node.prev;
-            node.next= null;
-            node.prev = null;
         }
     }
 
@@ -54,11 +74,7 @@ public class DynamicGraph {
     {
         Node<GraphNode> from_node = new Node<GraphNode>(from);
         Node<GraphNode> to_node = new Node<GraphNode>(to);
-        GraphEdge nEdge  = new GraphEdge(from_node, to_node);
-        from.children.addNode(to_node);
-        to.parents.addNode(from_node);
-        // we should save edges somewhere
-        return nEdge;
+        return new GraphEdge(from_node, to_node);
     }
 
     public void deleteEdge(GraphEdge edge)
@@ -71,27 +87,29 @@ public class DynamicGraph {
         source.color = Grey;
         Queue<GraphNode> queue = new Queue<GraphNode>();
         Node<GraphNode> node = new Node<GraphNode>(source);
-        //node.Node.key = source.key;
         queue.Enqueue(node);
-        RootedTree tree = new RootedTree(node);
-        while (queue.list.head != null)
+        RootedTree tree = new RootedTree();
+        while (queue.list.head != null)// for each node in queue add it's children in graph
         {
-           Node<GraphNode> u = queue.Dequeue();
-           Node<GraphNode> current = u.children_list.head;
-           while (current != null)
-           {
-               if (current.Node.color == White)
-               {
-                   tree.addChild(current);// check this later
-                   current.Node.color = Grey;
-                   current.Node.d ++;
-                   current.Node.parent = u.Node;
-                   queue.Enqueue(current);
-                   u.children_list.addNode(current);
-               }
-               current = current.next; // check if this is the right next
-           }
-           u.Node.color = Black;
+            Node<GraphNode> u = queue.Dequeue();
+            tree.addChild(u);// adds node as child of root
+
+            // check if the head isn't null before assigning it
+            if(u.Node.children.head != null) {// go through it's neighbors in graph
+                Node<GraphNode> current = u.Node.children.head;
+                while (current != null) {
+                    if (current.Node.color == White) {
+                        u.children_list.addNode(current);// add it as son of u because it was discovered by him
+                        current.Node.color = Grey;
+                        current.Node.d++;
+                        current.Node.parent = u.Node;
+                        queue.Enqueue(current);
+                        u.children_list.addNode(current);
+                    }
+                    current = current.next; // check if this is the right next
+                }
+                u.Node.color = Black;
+            }
         }
         return tree;
     }
