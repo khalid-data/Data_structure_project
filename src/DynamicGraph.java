@@ -20,23 +20,25 @@ public class DynamicGraph {
         if(this.head == null)//graph is still empty
         {
             this.head = nGraphNode;
+            this.End = nGraphNode;
             nGraphNode.prev = null;
             nGraphNode.next = null;
         }
-        else if (this.head != null && this.head.next == null)// there is only a head
+        else /*if (this.head != null && this.head.next == null)// there is only a head*/
         {
-            this.End = nGraphNode;
-            this.head.next = nGraphNode;
-            this.End.prev = this.head;
-            this.End.next = null;
+            this.head.prev = nGraphNode;
+            nGraphNode.next = this.head;
+            nGraphNode.prev = null;
+            this.head = nGraphNode;
+
         }
-        else if(this.head!= null && this.End != null){
+      /*  else if(this.head!= null && this.End != null){
             this.End.next = nGraphNode;
             nGraphNode.prev = this.End;
             this.End = nGraphNode;
             this.End.next = null;
         }
-        this.End = nGraphNode;
+        this.End = nGraphNode;*/
     }
 
     public GraphNode insertNode(int nodeKey)
@@ -52,8 +54,12 @@ public class DynamicGraph {
         // must check if it's head or end of graph this changes all
 
         //only one node in list
+        if (node.children.head!= null || node.parents.head != null)
+            return;
         if(node.next == null && node.prev == null) {
             node = null;
+            this.head = null;
+            this.End = null;
         }
         else if(node.next != null && node.prev == null) {// first node but not only
             this.head = node.next;
@@ -68,6 +74,7 @@ public class DynamicGraph {
         else {//mid node
             node.prev.next = node.next;
             node.next.prev = node.prev;
+            node = null;
         }
     }
 
@@ -151,9 +158,20 @@ public class DynamicGraph {
         //and the last one will be the one with the biggest retraction time
     }
 
+    public void DFS_init(){
+        GraphNode curr = this.head;
+        while (curr != null){
+            curr.color = 0;
+            curr.parent  = null;
+            curr.retraction_time = 0;
+            curr.discovery_time = 0;
+            curr = curr.next;
+        }
+    }
 
     public DynamicGraph dfs1() // by running this dfs we get a new graph that has vertexes in increasing order of retraction time
     {
+        DFS_init();
         GraphNode Current = this.head;
         while (Current != null){
             Current.color = White;
@@ -183,6 +201,7 @@ public class DynamicGraph {
 
     void dfs_visit2(DynamicGraph Gt, GraphNode u, Time time, RootedTree r,Node<GraphNode> parent)
     {
+
         time.value = time.value+1;
         u.discovery_time = time.value;
         u.color = Grey;
@@ -197,23 +216,25 @@ public class DynamicGraph {
                 v.Node.parent = parent.Node;
                 dfs_visit2(Gt,u,time, r, curr);
             }
+            v.Node.color = Black;
             v = v.next;
         }
     }
 
 
     public RootedTree dfs2(DynamicGraph Gt) {
+        Gt.DFS_init();
         GraphNode zero_node = new GraphNode(0);
         RootedTree tree = new RootedTree(new Node<GraphNode>(zero_node));
         Time time = new Time(0);
-        GraphNode U = Gt.End;
+        GraphNode U = Gt.head;
         while (U != null) {
             if (U.color == White) {
                 Node<GraphNode> sonOfZero = new Node<GraphNode>(U);
                 tree.root.children_list.addNode(sonOfZero);
                 dfs_visit2(Gt,U, time,tree, sonOfZero);
             }
-            U = U.prev;
+            U = U.next;
         }
         return tree;
     }

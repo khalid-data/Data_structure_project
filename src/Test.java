@@ -7,7 +7,7 @@ interface Constants
 {
     //10326
     int SEED = 3659412;
-    int TEST_SIZE = 100;
+    int TEST_SIZE = 200;
     int UNIQUE_KEYS_NUM = TEST_SIZE;
     int MAXIMUM_INSERT_NODES = UNIQUE_KEYS_NUM;
     int MAXIMUM_INSERT_EDGES = TEST_SIZE;

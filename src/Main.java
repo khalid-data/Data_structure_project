@@ -48,12 +48,21 @@ public class Main {
         GraphEdge e10 = new GraphEdge(new Node<GraphNode>(n6), new Node<GraphNode>(n7));
 
         GraphEdge e11 = new GraphEdge(new Node<GraphNode>(n7), new Node<GraphNode>(n8));
+        GraphEdge e12 = new GraphEdge(new Node<GraphNode>(n8), new Node<GraphNode>(n1));
+
 
 
 
         DataOutputStream outStream = new DataOutputStream(out);
 
-        RootedTree tree = G.scc();
+        RootedTree tree = new RootedTree();
+        Node<GraphNode> XI = new Node<GraphNode>(n1);
+        tree.root = XI;
+        Node<GraphNode> X2 = new Node<GraphNode>(n2);
+
+        XI.children_list.addNode();
+
+
         tree.printByLayer(outStream);
 
         outStream.flush();

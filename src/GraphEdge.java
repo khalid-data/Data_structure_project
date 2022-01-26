@@ -37,19 +37,20 @@ public class GraphEdge
             from.Node.children.head = null;
             from.Node.children.End = null;
         }
-        if (to.prev == null && to.next!=null)// first but not only one
+        else if (to.prev == null && to.next!=null)// first but not only one
         {
             from.Node.children.head = to.next;
             to.next.prev = null;
         }
-        if(to.next == null && to.prev != null)// last node in list
+        else if(to.next == null && to.prev != null)// last node in list
         {
             from.Node.children.End = to.prev;
             to.prev.next = null;
         }
-        if (to.next != null && to.prev != null)// in the mid
+        else //if (to.next != null && to.prev != null)// in the mid
         {
-            deleteNode(to);
+            to.prev.next = to.next;
+            to.next.prev = to.prev;
         }
 
 
@@ -58,19 +59,20 @@ public class GraphEdge
             to.Node.parents.head = null;
             to.Node.parents.End = null;
         }
-        if (from.prev == null && from.next != null)// first but not only one
+        else if (from.prev == null && from.next != null)// first but not only one
         {
             to.Node.parents.head = from.next;
             from.next.prev = null;
         }
-        if(from.next == null && from.prev != null)// last node in list
+        else if(from.next == null && from.prev != null)// last node in list
         {
             to.Node.parents.End = to.prev;
             from.prev.next = null;
         }
-        if (from.next != null && from.prev != null)// in the mid
+        else //if (from.next != null && from.prev != null)// in the mid
         {
-            deleteNode(from);
+            from.prev.next = from.next;
+            from.next.prev = from.prev;
         }
         to = null;
         from = null;
