@@ -8,6 +8,21 @@ public class LinkedList<T> {
         this.End = this.head;
     }
 
+    void addInFirst(Node<T> nNode)
+    {
+        if(this.head == null)
+        {
+            this.head = nNode;
+            this.End = this.head;
+        }
+        else{
+            nNode.next = this.head;
+            this.head.prev = nNode;
+            this.head = nNode;
+        }
+
+    }
+
     void addNode(Node<T> nNode)
     {
         //divide to 2 options

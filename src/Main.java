@@ -14,28 +14,48 @@ public class Main {
         G.addGraphNode(n2);
         GraphNode n3 = new GraphNode(3);
         G.addGraphNode(n3);
-
         GraphNode n4 = new GraphNode(4);
         G.addGraphNode(n4);
+        GraphNode n5 = new GraphNode(5);
+        G.addGraphNode(n5);
+        GraphNode n6 = new GraphNode(6);
+        G.addGraphNode(n6);
+        GraphNode n7 = new GraphNode(7);
+        G.addGraphNode(n7);
+        GraphNode n8 = new GraphNode(8);
+        G.addGraphNode(n8);
 
-        GraphEdge e1 = new GraphEdge(new Node<GraphNode>(n2), new Node<GraphNode>(n1));
+        GraphEdge e1 = new GraphEdge(new Node<GraphNode>(n1), new Node<GraphNode>(n2));
 
-        GraphEdge e3 = new GraphEdge(new Node<GraphNode>(n3), new Node<GraphNode>(n1));
+        GraphEdge e3 = new GraphEdge(new Node<GraphNode>(n1), new Node<GraphNode>(n3));
 
-        GraphEdge e2 = new GraphEdge(new Node<GraphNode>(n4), new Node<GraphNode>(n1));
+        GraphEdge e2 = new GraphEdge(new Node<GraphNode>(n2), new Node<GraphNode>(n4));
+
+        GraphEdge e5 = new GraphEdge(new Node<GraphNode>(n2), new Node<GraphNode>(n5));
 
 
-        RootedTree tree = new RootedTree();
-        tree.addChild(new Node<>(n1));
-        tree.addChild(new Node<>(n2));
-        Node<GraphNode> node = new Node<>(n3);
-        tree.addChild(node);
-        node.children_list.addNode(new Node<>(n4));
+        GraphEdge e4 = new GraphEdge(new Node<GraphNode>(n3), new Node<GraphNode>(n4));
+
+
+        GraphEdge e6 = new GraphEdge(new Node<GraphNode>(n3), new Node<GraphNode>(n6));
+
+        GraphEdge e7 = new GraphEdge(new Node<GraphNode>(n5), new Node<GraphNode>(n8));
+
+        GraphEdge e8 = new GraphEdge(new Node<GraphNode>(n6), new Node<GraphNode>(n5));
+
+        GraphEdge e9 = new GraphEdge(new Node<GraphNode>(n6), new Node<GraphNode>(n8));
+
+        GraphEdge e10 = new GraphEdge(new Node<GraphNode>(n6), new Node<GraphNode>(n7));
+
+        GraphEdge e11 = new GraphEdge(new Node<GraphNode>(n7), new Node<GraphNode>(n8));
+
+
 
         DataOutputStream outStream = new DataOutputStream(out);
+
+        RootedTree tree = G.scc();
         tree.printByLayer(outStream);
-        outStream.writeBytes(lineSeparator());
-        outStream.writeBytes(String.valueOf(n1.getInDegree()));
+
         outStream.flush();
     }
 }

@@ -9,9 +9,9 @@ public class GraphEdge
     public GraphEdge(Node<GraphNode> from,Node<GraphNode> to)
     {
         this.from = from;
-        to.Node.parents.addNode(from);
+        to.Node.parents.addInFirst(from);
         this.to = to;
-        from.Node.children.addNode(to);
+        from.Node.children.addInFirst(to);
     }
 
     public Node<GraphNode> getSource() {

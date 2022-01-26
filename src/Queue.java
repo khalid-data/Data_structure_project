@@ -27,6 +27,7 @@ public class Queue<T> {
         {
             Node<T> temp = list.head;
             list.head = null;
+            list.End = null;
             return temp;
         }
         return null;

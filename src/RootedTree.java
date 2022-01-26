@@ -89,20 +89,25 @@ public class RootedTree {
         queue.Enqueue(new Node<GraphNode>(indicator));//*/
     }
 
-    private void print_tree(Node<GraphNode> root, DataOutputStream out) throws IOException {
-        out.writeBytes(String.valueOf(root.Node.key));// print roo
-        out.writeBytes(System.lineSeparator());
+    private void print_tree(Node<GraphNode> root, DataOutputStream out, StringBuilder to_print) throws IOException {
         Node<GraphNode> current = root.children_list.head;
         while(current!=null)// ad all current queue head to queue
         {
-            out.writeBytes(String.valueOf(current.Node.key));
-            out.writeBytes(",");
-            print_tree(current, out);
+            to_print.append(String.valueOf(current.Node.key)).append(",");
+
+            print_tree(current, out, to_print);
             current = current.next;// next child of root aka right sibling of current
+
         }
+
     }
 
     public void preorderPrint(DataOutputStream out) throws IOException {
-        print_tree(this.root, out);
+        StringBuilder to_print = new StringBuilder();
+        to_print.append(String.valueOf(root.Node.key)).append(",");
+        print_tree(this.root, out, to_print);
+        int len = to_print.length();
+        to_print.deleteCharAt(len-1);
+        out.writeBytes(to_print.toString());
     }
 }

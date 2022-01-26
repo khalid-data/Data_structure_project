@@ -1,4 +1,5 @@
 import java.awt.font.TextHitInfo;
+import java.time.temporal.ChronoUnit;
 
 public class DynamicGraph {
     static final int White = 0;// haven't been here yet
@@ -22,14 +23,14 @@ public class DynamicGraph {
             nGraphNode.prev = null;
             nGraphNode.next = null;
         }
-        if (this.head != null && this.head.next == null)// there is only a head
+        else if (this.head != null && this.head.next == null)// there is only a head
         {
             this.End = nGraphNode;
             this.head.next = nGraphNode;
             this.End.prev = this.head;
             this.End.next = null;
         }
-        if(this.head!= null && this.End != null){
+        else if(this.head!= null && this.End != null){
             this.End.next = nGraphNode;
             nGraphNode.prev = this.End;
             this.End = nGraphNode;
@@ -84,37 +85,48 @@ public class DynamicGraph {
 
     public RootedTree bfs(GraphNode source)
     {
+        //Time distance = new Time(0);
+        GraphNode Current = this.head;
+        while (Current != null){
+            Current.color = White;
+            Current.d = -1;
+            Current.parent = null;
+            Current = Current.next;
+        }
         source.color = Grey;
+        source.d = 0;
         Queue<GraphNode> queue = new Queue<GraphNode>();
         Node<GraphNode> node = new Node<GraphNode>(source);
         queue.Enqueue(node);
+        // initialization
+        // remember to make an initialization function
         RootedTree tree = new RootedTree();
+        tree.root = node;
         while (queue.list.head != null)// for each node in queue add it's children in graph
         {
             Node<GraphNode> u = queue.Dequeue();
-            tree.addChild(u);// adds node as child of root
-
             // check if the head isn't null before assigning it
-            if(u.Node.children.head != null) {// go through it's neighbors in graph
-                Node<GraphNode> current = u.Node.children.head;
-                while (current != null) {
-                    if (current.Node.color == White) {
-                        u.children_list.addNode(current);// add it as son of u because it was discovered by him
-                        current.Node.color = Grey;
-                        current.Node.d++;
-                        current.Node.parent = u.Node;
-                        queue.Enqueue(current);
-                        u.children_list.addNode(current);
-                    }
-                    current = current.next; // check if this is the right next
+            // go through it's neighbors in graph
+            Node<GraphNode> current = u.Node.children.head;
+            while (current != null) {
+                if (current.Node.color == White) {
+                    Node<GraphNode> V = new Node<GraphNode>(current.Node);
+                    u.children_list.addNode(V);// add it as son of u because it was discovered by him
+                    current.Node.color = Grey;
+                    current.Node.d = u.Node.d+1;
+                    current.Node.parent = u.Node;
+                    queue.Enqueue(V);
                 }
-                u.Node.color = Black;
+                current = current.next; // check if this is the right next
             }
+            u.Node.color = Black;
         }
         return tree;
     }
 
-    public void dfs_visit(DynamicGraph G, GraphNode u, Time time, DynamicGraph nG)
+
+
+    public void dfs_visit( GraphNode u, Time time, DynamicGraph nG)
     {
         time.value = time.value+1;
         u.discovery_time = time.value;
@@ -125,7 +137,7 @@ public class DynamicGraph {
             if (v.Node.color == White)
             {
                 v.Node.parent = u;
-                dfs_visit(G,u,time, nG);
+                dfs_visit(v.Node,time, nG);
             }
             v = v.next;
         }
@@ -140,14 +152,21 @@ public class DynamicGraph {
     }
 
 
-    public DynamicGraph dfs1(DynamicGraph G) // by running this dfs we get a new graph that has vertexes in increasing order of retraction time
+    public DynamicGraph dfs1() // by running this dfs we get a new graph that has vertexes in increasing order of retraction time
     {
+        GraphNode Current = this.head;
+        while (Current != null){
+            Current.color = White;
+            Current.parent = null;
+            Current.retraction_time = Current.discovery_time = 0;
+            Current = Current.next;
+        }
         DynamicGraph nG= new DynamicGraph();
         Time time = new Time(0);
-        GraphNode U = G.head;
-        while (U != null) {
+        GraphNode U = this.head;
+        while (U != null) {// GOES THROUGH ALL GRAPH NODES
             if (U.color == White) {
-                dfs_visit(G,U, time, nG);
+                dfs_visit(U, time, nG);
             }
             U = U.next;
         }
@@ -160,21 +179,23 @@ public class DynamicGraph {
         }
         return nG;
     }
+
+
     void dfs_visit2(DynamicGraph Gt, GraphNode u, Time time, RootedTree r,Node<GraphNode> parent)
     {
         time.value = time.value+1;
         u.discovery_time = time.value;
         u.color = Grey;
-        Node<GraphNode> new_node = new Node<GraphNode>(u);
 
         Node<GraphNode> v = u.parents.head;
         while(v!= null)
         {
             if (v.Node.color == White)
             {
-                parent.children_list.addNode(new Node<GraphNode>(v.Node));
-                v.Node.parent = u;
-                dfs_visit2(Gt,u,time, r, new_node);
+                Node<GraphNode> curr = new Node<GraphNode>(v.Node);
+                parent.children_list.addNode(curr);
+                v.Node.parent = parent.Node;
+                dfs_visit2(Gt,u,time, r, curr);
             }
             v = v.next;
         }
@@ -187,10 +208,10 @@ public class DynamicGraph {
         Time time = new Time(0);
         GraphNode U = Gt.End;
         while (U != null) {
-            if (U.color != White) {
-                Node<GraphNode> in_tree = new Node<GraphNode>(U);
-                tree.root.children_list.addNode(in_tree);
-                dfs_visit2(Gt,U, time,tree, in_tree);
+            if (U.color == White) {
+                Node<GraphNode> sonOfZero = new Node<GraphNode>(U);
+                tree.root.children_list.addNode(sonOfZero);
+                dfs_visit2(Gt,U, time,tree, sonOfZero);
             }
             U = U.prev;
         }
@@ -199,7 +220,7 @@ public class DynamicGraph {
 
     public RootedTree scc()
     {
-        DynamicGraph gt = dfs1(this);// returns the transpose graph in the opposite of the wanted order
+        DynamicGraph gt = dfs1();// returns the transpose graph in the opposite of the wanted order
         return dfs2(gt);
     }
 
