@@ -24,7 +24,7 @@ public class DynamicGraph {
             nGraphNode.prev = null;
             nGraphNode.next = null;
         }
-        else /*if (this.head != null && this.head.next == null)// there is only a head*/
+        else
         {
             this.head.prev = nGraphNode;
             nGraphNode.next = this.head;
@@ -32,13 +32,6 @@ public class DynamicGraph {
             this.head = nGraphNode;
 
         }
-      /*  else if(this.head!= null && this.End != null){
-            this.End.next = nGraphNode;
-            nGraphNode.prev = this.End;
-            this.End = nGraphNode;
-            this.End.next = null;
-        }
-        this.End = nGraphNode;*/
     }
 
     public GraphNode insertNode(int nodeKey)
@@ -51,7 +44,6 @@ public class DynamicGraph {
     public void deleteNode(GraphNode node)
     {
         // we delete a node only if it has no edges
-        // must check if it's head or end of graph this changes all
 
         //only one node in list
         if (node.children.head!= null || node.parents.head != null)
@@ -90,29 +82,21 @@ public class DynamicGraph {
         edge.deleteEdge();
     }
 
+
+
     public RootedTree bfs(GraphNode source)
     {
-        //Time distance = new Time(0);
-        GraphNode Current = this.head;
-        while (Current != null){
-            Current.color = White;
-            Current.d = -1;
-            Current.parent = null;
-            Current = Current.next;
-        }
+        bfs_init();
         source.color = Grey;
         source.d = 0;
         Queue<GraphNode> queue = new Queue<GraphNode>();
         Node<GraphNode> node = new Node<GraphNode>(source);
         queue.Enqueue(node);
-        // initialization
-        // remember to make an initialization function
         RootedTree tree = new RootedTree();
         tree.root = node;
         while (queue.list.head != null)// for each node in queue add it's children in graph
         {
             Node<GraphNode> u = queue.Dequeue();
-            // check if the head isn't null before assigning it
             // go through it's neighbors in graph
             Node<GraphNode> current = u.Node.children.head;
             while (current != null) {
@@ -124,38 +108,29 @@ public class DynamicGraph {
                     current.Node.parent = u.Node;
                     queue.Enqueue(V);
                 }
-                current = current.next; // check if this is the right next
+                current = current.next;
             }
             u.Node.color = Black;
         }
         return tree;
     }
 
-
-
-    public void dfs_visit( GraphNode u, Time time, DynamicGraph nG)
-    {
-        time.value = time.value+1;
-        u.discovery_time = time.value;
-        u.color = Grey;
-        Node<GraphNode> v = u.children.head;
-        while(v!= null)
-        {
-            if (v.Node.color == White)
-            {
-                v.Node.parent = u;
-                dfs_visit(v.Node,time, nG);
-            }
-            v = v.next;
+    private void bfs_init(){
+        GraphNode Current = this.head;
+        while (Current != null){
+            Current.color = White;
+            Current.d = -1;
+            Current.parent = null;
+            Current = Current.next;
         }
-        u.color = Black;
-        time.value = time.value+1;
-        u.retraction_time = time.value;
-        GraphNode nU = new GraphNode(u.key);
-        nU.parents = u.parents;
-        nU.children = u.children;
-        nG.addGraphNode(nU);// in this graph the first edge will be the one with the smallest retraction time
-        //and the last one will be the one with the biggest retraction time
+    }
+
+
+
+
+    public RootedTree scc()
+    {
+        return dfs2(dfs1());
     }
 
     public void DFS_init(){
@@ -169,44 +144,49 @@ public class DynamicGraph {
         }
     }
 
-    public DynamicGraph dfs1() // by running this dfs we get a new graph that has vertexes in increasing order of retraction time
-    {
+    public LinkedList<GraphNode> dfs1(){
         DFS_init();
-        GraphNode Current = this.head;
-        while (Current != null){
-            Current.color = White;
-            Current.parent = null;
-            Current.retraction_time = Current.discovery_time = 0;
-            Current = Current.next;
-        }
-        DynamicGraph nG= new DynamicGraph();
+        LinkedList<GraphNode> ordered_nodes = new LinkedList<>();
         Time time = new Time(0);
+
         GraphNode U = this.head;
         while (U != null) {// GOES THROUGH ALL GRAPH NODES
             if (U.color == White) {
-                dfs_visit(U, time, nG);
+                dfs_visit(U, time, ordered_nodes);
             }
             U = U.next;
         }
-        GraphNode V = nG.head;
-        while (V!= null)
-        {
-            V.discovery_time= 0;
-            V.retraction_time = 0;
-            V=V.next;
-        }
-        return nG;
+        return ordered_nodes;
     }
 
-
-    void dfs_visit2(DynamicGraph Gt, GraphNode u, Time time, RootedTree r,Node<GraphNode> parent)
-    {
-
+    private void dfs_visit(GraphNode u, Time time, LinkedList<GraphNode> ordered_nodes){
         time.value = time.value+1;
         u.discovery_time = time.value;
         u.color = Grey;
 
-        Node<GraphNode> v = u.parents.head;
+        Node<GraphNode> v = u.children.head;
+        while(v!= null)
+        {
+            if (v.Node.color == White)
+            {
+                v.Node.parent = u;
+                dfs_visit(v.Node,time, ordered_nodes);
+            }
+            v = v.next;
+        }
+        u.color = Black;
+        time.value = time.value+1;
+        u.retraction_time = time.value;
+        ordered_nodes.addInFirst(new Node<>(u));
+    }
+
+    void dfs_visit2(LinkedList<GraphNode> ordered_nodes , Time time,Node<GraphNode> parent)
+    {
+        time.value = time.value+1;
+        parent.Node.discovery_time = time.value;
+        parent.Node.color = Grey;
+
+        Node<GraphNode> v = parent.Node.parents.head;
         while(v!= null)
         {
             if (v.Node.color == White)
@@ -214,35 +194,54 @@ public class DynamicGraph {
                 Node<GraphNode> curr = new Node<GraphNode>(v.Node);
                 parent.children_list.addNode(curr);
                 v.Node.parent = parent.Node;
-                dfs_visit2(Gt,u,time, r, curr);
+                dfs_visit2(ordered_nodes, time, curr);
             }
-            v.Node.color = Black;
             v = v.next;
         }
+        parent.Node.color = Black;
+        time.value++;
+        parent.Node.retraction_time = time.value;
+
     }
 
 
-    public RootedTree dfs2(DynamicGraph Gt) {
-        Gt.DFS_init();
+
+    public RootedTree dfs2(LinkedList<GraphNode> ordered_nodes) {
+        DFS_init();
+
+
         GraphNode zero_node = new GraphNode(0);
         RootedTree tree = new RootedTree(new Node<GraphNode>(zero_node));
         Time time = new Time(0);
-        GraphNode U = Gt.head;
-        while (U != null) {
-            if (U.color == White) {
-                Node<GraphNode> sonOfZero = new Node<GraphNode>(U);
-                tree.root.children_list.addNode(sonOfZero);
-                dfs_visit2(Gt,U, time,tree, sonOfZero);
+
+        Node<GraphNode> U1 = ordered_nodes.head;
+
+
+        Node<GraphNode> U = ordered_nodes.head;
+        while (U!= null) {
+            if (U.Node.color == White) {
+                Node<GraphNode> curr_parent = new Node<>(U.Node);
+                tree.root.children_list.addNode(curr_parent);
+
+                dfs_visit2(ordered_nodes, time, curr_parent);
             }
             U = U.next;
         }
         return tree;
     }
 
-    public RootedTree scc()
-    {
-        DynamicGraph gt = dfs1();// returns the transpose graph in the opposite of the wanted order
-        return dfs2(gt);
-    }
+  /*  private void whiten_children(DynamicGraph g){
+        GraphNode U = g.head;
+        while (U != null) {
+            Node<GraphNode> curr = U.children.head;
+            while (curr!= null){
+                curr.Node.color = White;
+                curr = curr.next;
+            }
+            U = U.next;
+        }
+    }*/
+
+
 
 }

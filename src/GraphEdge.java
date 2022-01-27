@@ -32,6 +32,7 @@ public class GraphEdge
 
     public void deleteEdge()
     {
+
         if(to.next == null && to.prev == null)//only node in the list
         {
             from.Node.children.head = null;
@@ -74,6 +75,7 @@ public class GraphEdge
             from.prev.next = from.next;
             from.next.prev = from.prev;
         }
+
         to = null;
         from = null;
     }

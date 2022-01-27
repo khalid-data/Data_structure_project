@@ -60,7 +60,13 @@ public class Main {
         tree.root = XI;
         Node<GraphNode> X2 = new Node<GraphNode>(n2);
 
-        XI.children_list.addNode();
+        XI.children_list.addNode(X2);
+        Node<GraphNode> X3 = new Node<GraphNode>(n3);
+        XI.children_list.addNode(X3);
+        Node<GraphNode> X4 = new Node<GraphNode>(n4);
+        X2.children_list.addNode(X4);
+
+
 
 
         tree.printByLayer(outStream);

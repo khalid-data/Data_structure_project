@@ -59,4 +59,15 @@ public class LinkedList<T> {
         }
         return cnt;
     }
+
+    void print_children(){
+        if(head.Node instanceof GraphNode) {
+            Node<T> current = head;
+            while (current != null) {
+
+                System.out.println(((GraphNode)current.Node).key +", ");
+                current = current.next;
+            }
+        }
+    }
 }
