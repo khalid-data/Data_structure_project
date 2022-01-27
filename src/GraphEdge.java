@@ -6,8 +6,7 @@ public class GraphEdge
     Node<GraphNode> from;
     Node<GraphNode> to;
 
-    public GraphEdge(Node<GraphNode> from,Node<GraphNode> to)
-    {
+    public GraphEdge(Node<GraphNode> from,Node<GraphNode> to) {
         this.from = from;
         to.Node.parents.addInFirst(from);
         this.to = to;
@@ -20,8 +19,7 @@ public class GraphEdge
 
     public Node<GraphNode> getDestination(){ return to; }
 
-    void deleteNode(Node<GraphNode> to_delete)
-    {
+    void deleteNode(Node<GraphNode> to_delete) {
 
         // we should connect the prev and next Nodes together
         // make the node null so it will be deleted by the garbage disposal
@@ -30,8 +28,7 @@ public class GraphEdge
         to_delete = null;
     }
 
-    public void deleteEdge()
-    {
+    public void deleteEdge() {
 
         if(to.next == null && to.prev == null)//only node in the list
         {

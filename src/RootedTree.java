@@ -3,7 +3,7 @@ import java.io.IOException;
 
 /*
 this class represents rooted treed
-we would have prefered to make it generic so that the node could have anything and not just Graph nodes
+we would have preferred to make it generic so that the node could have anything and not just Graph nodes
 but this makes it impossible to write the functions names we were asked to do exactly the way we were asked
 we mean in function public RootedTree()
  */
@@ -16,14 +16,12 @@ public class RootedTree {
         this.root = null;
     }
 
-    public RootedTree(Node<GraphNode> node)
-    {
+    public RootedTree(Node<GraphNode> node) {
         this.root = node;
         // now we have a root and its children list
     }
 
-    public RootedTree(GraphNode node)
-    {
+    public RootedTree(GraphNode node) {
         this.root = new Node<>(node);
         // now we have a root and its children list
     }
@@ -32,8 +30,7 @@ public class RootedTree {
     adds child to the root
     note: to add node to roots child (its linked list) we do it in the node class
      */
-    void addChild (Node<GraphNode> node)
-    {
+    void addChild (Node<GraphNode> node) {
         if (root != null)
             root.children_list.addNode(node);
         else
@@ -75,8 +72,7 @@ public class RootedTree {
     /*
     for every node in the queue that is before -1 we add all its children
      */
-    void addToQueue(Queue<GraphNode> queue)
-    {
+    void addToQueue(Queue<GraphNode> queue) {
         Node<GraphNode> current = queue.list.head;
         Node<GraphNode> child_of_curr = current.children_list.head;
 
@@ -85,8 +81,6 @@ public class RootedTree {
             queue.Enqueue(child_of_curr);
             child_of_curr = child_of_curr.next;// next child of queue head
         }
-       /* GraphNode indicator = new GraphNode(-1);
-        queue.Enqueue(new Node<GraphNode>(indicator));//*/
     }
 
     private void print_tree(Node<GraphNode> root, DataOutputStream out, StringBuilder to_print) throws IOException {

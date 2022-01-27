@@ -2,14 +2,12 @@ public class LinkedList<T> {
     Node<T> head;
     Node<T> End;
 
-    public LinkedList()
-    {
+    public LinkedList() {
         this.head = null;
         this.End = this.head;
     }
 
-    void addInFirst(Node<T> nNode)
-    {
+    void addInFirst(Node<T> nNode) {
         if(this.head == null)
         {
             this.head = nNode;
@@ -23,8 +21,7 @@ public class LinkedList<T> {
 
     }
 
-    void addNode(Node<T> nNode)
-    {
+    void addNode(Node<T> nNode) {
         //divide to 2 options
         //1) we didnt add nodes yet to the list
         if(this.head == null)
@@ -46,8 +43,7 @@ public class LinkedList<T> {
         this.End = nNode;
     }
 
-    int get_length()
-    {
+    int get_length() {
         int cnt = 0;
         if (head!= null) {
             Node<T> current = head;

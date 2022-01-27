@@ -13,13 +13,11 @@ public class GraphNode
     GraphNode parent;
     GraphNode next;
     GraphNode prev;
-    //should be Node
     LinkedList<GraphNode> children;// nodes that this node emits an edge to
     LinkedList <GraphNode>parents;//node that emits nodes to this node
 
 
-    public GraphNode(int key)
-    {
+    public GraphNode(int key) {
         this.key = key;
         this.color = White;
         this.d = -1;

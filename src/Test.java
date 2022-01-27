@@ -5,7 +5,6 @@ import static java.lang.System.out;
 
 interface Constants
 {
-    //10326
     int SEED = 3659412;
     int TEST_SIZE = 10326;
     int UNIQUE_KEYS_NUM = TEST_SIZE;
